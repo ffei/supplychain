@@ -1,3 +1,12 @@
+<?php
+
+  $origL = $_GET['origL'];
+  $origU = $_GET['origU'];
+  $destL = $_GET['destL'];
+  $destU = $_GET['destU'];
+
+?>
+
 <!DOCTYPE html>
 <html>
   <head>
@@ -13,10 +22,10 @@
     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.js"></script>
     <script type="text/javascript">
 
-    var origL = 0;
-    var origU = 50;
-    var destL = 0;
-    var destU = 160;
+    var origL = <?=$origL ?>;
+    var origU = <?=$origU ?>;
+    var destL = <?=$destL ?>;
+    var destU = <?=$destU ?>;
 
 
       function initialize() {
