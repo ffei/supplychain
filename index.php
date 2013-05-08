@@ -71,6 +71,10 @@
       var timeWaited;
       var origins = [];
       var destinations = [];
+      var fixedTime = 10000;
+      var extraTime = 2000;
+      var failure = 0;
+
       function getMatrix() {
         currentOrigin = origL;
         currentDestination = destL;
@@ -109,7 +113,7 @@
               flag = true;
             }
           }*/
-        }, 200);
+        }, 1000);
         
       }
 
@@ -146,16 +150,19 @@
               output();
             }
           }
+          if(failure > 0) failure -= 0.1;
           console.log("Current: "+currentOrigin+","+currentDestination);
           setTimeout(function(){
             flag = true;
-          }, 10000)
+          }, fixedTime+extraTime*failure);
           //console.log(flag);
         } else {
           console.log(status);
+          failure += 1;
           setTimeout(function(){
             flag = true;
-          }, 1000)
+          }, fixedTime+extraTime*failure);
+          //service = new google.maps.DistanceMatrixService();
         }
         
         
