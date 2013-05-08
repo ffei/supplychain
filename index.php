@@ -13,6 +13,12 @@
     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.js"></script>
     <script type="text/javascript">
 
+    var origL = 0;
+    var origU = 50;
+    var destL = 0;
+    var destU = 160;
+
+
       function initialize() {
         var mapOptions = {
           center: new google.maps.LatLng(35 , 105),
@@ -57,24 +63,25 @@
       var origins = [];
       var destinations = [];
       function getMatrix() {
-        currentOrigin = 0;
-        currentDestination = 0;
+        currentOrigin = origL;
+        currentDestination = destL;
         flag = true;
         interval = setInterval(function(){
           if(flag) {
+            //console.log("A new batch.");
             flag = false;
             timeWaited = 0;
             origins = [];
             destinations = [];
             for(var i = 0; i < 4; i++) {
-              if(currentDestination+i < retailers.length) {
+              if(currentDestination+i < destU) {
                 var tempPoint = new google.maps.LatLng(retailers[currentDestination+i].latitude, retailers[currentDestination+i].longitude);
                 destinations.push(tempPoint);
               }
               
             }
             for(var i = 0; i < 25; i++) {
-              if(currentOrigin+i < retailers.length) {
+              if(currentOrigin+i < origU) {
                 var tempPoint = new google.maps.LatLng(retailers[currentOrigin+i].latitude, retailers[currentOrigin+i].longitude);
                 origins.push(tempPoint);
               }
@@ -85,13 +92,14 @@
               travelMode: google.maps.TravelMode.DRIVING,
               avoidHighways: false,
               avoidTolls: false
-            }, callback)
-          } else {
+            }, callback);
+            console.log("Request sent.");
+          } /*else {
             timeWaited += 200;
-            if(timeWaited >= 60000) {
+            if(timeWaited >= 10000) {
               flag = true;
             }
-          }
+          }*/
         }, 200);
         
       }
@@ -108,37 +116,47 @@
               if (element.status == google.maps.DistanceMatrixStatus.OK) {
                 var distance = element.distance.value;
                 var duration = element.duration.text;
-                //console.log(i + "," + j);
+                console.log((currentOrigin+i) + "," + (currentDestination+j));
                 //console.log(distance);
                 distanceMatrix[currentOrigin+i][currentDestination+j] = distance;
                 durationMatrix[currentOrigin+i][currentDestination+j] = duration;
               } else {
                 console.log((currentOrigin+i) + "," + (currentDestination+j));
-                //console.log(element);
-                //console.log(distanceMatrix[currentOrigin+i][currentDestination+j]);
+                console.log(element);
               }
             }
           }
 
           currentDestination += 4;
-          if(currentDestination >= retailers.length) {
+          if(currentDestination >= destU) {
             currentDestination = 0;
             currentOrigin += 25;
-            if(currentOrigin >= retailers.length) {
+            if(currentOrigin >= origU) {
               clearInterval(interval);
               //console.log(distanceMatrix);
               output();
             }
           }
+          console.log("Current: "+currentOrigin+","+currentDestination);
+          setTimeout(function(){
+            flag = true;
+          }, 10000)
+          //console.log(flag);
+        } else {
+          console.log(status);
+          setTimeout(function(){
+            flag = true;
+          }, 1000)
         }
-        flag = true;
+        
+        
       }
 
       function output() {
         $("body").html("<table>");
-        for(var i = 0; i < retailers.length; i++) {
+        for(var i = origL; i < origU; i++) {
           $("body").append("<tr>");
-          for(var j = 0; j < retailers.length; j++) {
+          for(var j = destL; j < destU; j++) {
             $("body").append("<th>" + distanceMatrix[i][j] + "</th>");
           }
           $("body").append("</tr>");
