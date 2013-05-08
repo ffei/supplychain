@@ -12,10 +12,11 @@ $temp;
 
 while($temp = $res->fetch_array()) {
 	$retailer[] = $temp;
-	
+	/*
 	if(count($retailer) >= 20) {
 		break;
 	}
+	*/
 }
 
 echo json_encode($retailer);

@@ -86,11 +86,6 @@
               avoidHighways: false,
               avoidTolls: false
             }, callback)
-          } else {
-            timeWaited += 200;
-            if(timeWaited >= 60000) {
-              flag = true;
-            }
           }
         }, 200);
         
@@ -130,8 +125,15 @@
               output();
             }
           }
+          setTimeout(function(){
+            flag = true;
+          }, 10000);
+        } else {
+          console.log(status);
+          setTimeout(function(){
+            flag = true;
+          }, 1000);
         }
-        flag = true;
       }
 
       function output() {
