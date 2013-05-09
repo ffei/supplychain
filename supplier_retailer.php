@@ -40,6 +40,7 @@
       google.maps.event.addDomListener(window, 'load', initialize);
 
       var retailers = [];
+      var suppliers = [];
       var distanceMatrix = [];
       var durationMatrix = [];
       var service = new google.maps.DistanceMatrixService();
@@ -60,8 +61,26 @@
             durationMatrix[i] = new Array(retailers.length);
           }
           //console.log(retailers);
-          getMatrix();
+          //getMatrix();
         })
+        $.get("supplier.php", function(resp){
+          var resp_json = JSON.parse(resp);
+          for(var temp in resp_json) {
+            var supplier = new Object();
+            supplier.id = resp_json[temp].id;
+            supplier.capacity = resp_json[temp].capacity;
+            supplier.longitude = resp_json[temp].longitude;
+            supplier.latitude = resp_json[temp].latitude;
+            suppliers.push(supplier);
+          }
+          for(var i = 0; i < suppliers.length; i++) {
+            distanceMatrix[i] = new Array(retailers.length);
+            durationMatrix[i] = new Array(retailers.length);
+          }
+          //console.log(retailers);
+          //getMatrix();
+        })
+        setTimeout(function(){getMatrix();},1000);
       })
 
       var currentOrigin;
@@ -95,7 +114,7 @@
             }
             for(var i = 0; i < 25; i++) {
               if(currentOrigin+i < origU) {
-                var tempPoint = new google.maps.LatLng(retailers[currentOrigin+i].latitude, retailers[currentOrigin+i].longitude);
+                var tempPoint = new google.maps.LatLng(suppliers[currentOrigin+i].latitude, suppliers[currentOrigin+i].longitude);
                 origins.push(tempPoint);
               }
             }
@@ -107,12 +126,7 @@
               avoidTolls: false
             }, callback);
             console.log("Request sent.");
-          } /*else {
-            timeWaited += 200;
-            if(timeWaited >= 10000) {
-              flag = true;
-            }
-          }*/
+          }
         }, 1000);
         
       }
